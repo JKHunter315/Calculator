@@ -26,24 +26,34 @@ numbers.forEach(function(number) {
 
 numberArray.sort(); //sorts array so index matches number
 
-// adds operator ids to array 
-operators.forEach(function (operator) {
-    operatorArray.push(operator.id);
-    operator.addEventListener('click', function(e) {
-        let userFirstOpArr = usersArray.join(''); // joins the strings together
-        let userNum1 = Number(userFirstOpArr); //turns them into a number
-        usersArray = []; //resets the numbers the user chooses 
-        let thisOp = operator.id; // declares operator id
 
-        result.addEventListener('click', function(e) { 
-            let userSecondOpArr = usersArray.join(''); //performs s
-            let userNum2 = Number(userSecondOpArr, 10);
-            let result = giveResult(thisOp, userNum1, userNum2);
-            console.log(result);
-            usersArray = [];
-        });
+// adds operator ids to array 
+    operators.forEach(function (operator) {
+        operatorArray.push(operator.id);
+        operator.addEventListener('click', function(e) {
+            let userFirstOpArr = usersArray.join(''); // joins the strings together
+            let userNum1 = Number(userFirstOpArr); //turns them into a number
+            usersArray = []; //resets the numbers the user chooses 
+            let thisOp = operator.id; // declares operator id
+
+            result.addEventListener('click', function(e) { 
+                let userSecondOpArr = usersArray.join(''); //joins the numbers into a string
+                let userNum2 = Number(userSecondOpArr); //turns it into a number
+                let result = giveResult(thisOp, userNum1, userNum2); //calls function
+                displayScreen.textContent = result;
+                usersArray = [];
+            });
+        }); 
     });
-});
+
+
+function clearNums() {
+    usersArray = [];
+    userNum2 = 0;
+    userNum1 = 0;
+    userFirstOpArr = 0;
+    userSecondOpArr = 0;
+}
 
 function add(numA, numB) {
     return numA + numB;
