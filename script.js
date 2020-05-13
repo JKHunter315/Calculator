@@ -3,56 +3,83 @@ const numbers = document.querySelectorAll('.numbers')
 const operators = document.querySelectorAll('.operators');
 // gets the id of the Clear display and equals button. 
 //Other methods must be done with loops
-const clearDisplay = document.querySelector('#clear').id;
+let clearDisplay = document.querySelector('#clear');
 let result = document.querySelector('#equals')
 let displayScreen = document.querySelector('#display-value');
-
-//initialize an array to store the id tags on the numbers
-let numberArray = [];
-
-//initializearray for storing operator ids
-let operatorArray = [];
 
 //initialize array for storing the users numbers
 let usersArray = [];
 
+let userNum = 0;
+let chosenOp = '';
+
+let userNumArr = [];
+let userOpArr = [];
+let userNumFinal = 0;
+let displayNums = [];
+
 // for each number, its id is pushed into the number array
 numbers.forEach(function(number) {
-    numberArray.unshift(number.id);
     number.addEventListener('click', function(e) {
         usersArray.push(number.id);
     });
 });
 
-numberArray.sort(); //sorts array so index matches number
-
-
 // adds operator ids to array 
-    operators.forEach(function (operator) {
-        operatorArray.push(operator.id);
-        operator.addEventListener('click', function(e) {
-            let userFirstOpArr = usersArray.join(''); // joins the strings together
-            let userNum1 = Number(userFirstOpArr); //turns them into a number
-            usersArray = []; //resets the numbers the user chooses 
-            let thisOp = operator.id; // declares operator id
+operators.forEach(function (operator) {
+    operator.addEventListener('click', findUserNum);
+});
+    
+function findUserNum(e){
+    let userFirstArr = usersArray.join(''); // joins the strings together
+    userNum = Number(userFirstArr); //turns them into a number
+    usersArray = []; //resets the numbers the user chooses 
+    chosenOp = e.target.id; // declares operator id
+    userNumArr.push(userNum); // pushes number into array
+    userOpArr.push(chosenOp); // pushes operator into array
 
-            result.addEventListener('click', function(e) { 
-                let userSecondOpArr = usersArray.join(''); //joins the numbers into a string
-                let userNum2 = Number(userSecondOpArr); //turns it into a number
-                let result = giveResult(thisOp, userNum1, userNum2); //calls function
-                displayScreen.textContent = result;
-                usersArray = [];
-            });
-        }); 
-    });
+    }; 
 
+result.addEventListener('click', calculate);
+
+function calculate(e) {
+    let userSecondArr = usersArray.join(''); //joins the numbers after last operator into string
+    usersArray = [];
+    userNumFinal = Number(userSecondArr); //turns it into a number
+    userNumArr.push(userNumFinal); // pushes final num into array;
+    if (userNumArr.length < 2) {
+        let calculated = giveResult(userOpArr[0], userNumArr[0], userNumArr[1]);
+        displayScreen.textContent = calculated;
+    } else { 
+        for (let i = 0; i < userNumArr.length - 1; i++) {
+            calculated = giveResult(userOpArr[i], userNumArr[i], userNumArr[i+1]);
+            userNumArr[i + 1] = calculated;
+        }
+    }
+    calculated = userNumArr[userNumArr.length-1];
+    console.log(calculated);
+    displayScreen.textContent = calculated;
+    clearNums();
+}
+
+clearDisplay.addEventListener('click', clearAll);
+
+function clearAll(e) {
+    userNumArr = [];
+    userOpArr = [];
+    chosenOp = '';
+    usersArray = [];
+    userNum = 0;
+    userNumFinal = 0;
+    calculated = 00;
+    displayScreen.textContent = calculated;
+}
+        
 
 function clearNums() {
-    usersArray = [];
-    userNum2 = 0;
-    userNum1 = 0;
-    userFirstOpArr = 0;
-    userSecondOpArr = 0;
+    userNumArr = [];
+    userOpArr = [];
+    chosenOp = '';
 }
 
 function add(numA, numB) {
@@ -77,9 +104,10 @@ function giveResult(operator,numA, numB) {
         return minus;
     } else if (operator ==  "multiply") {
         let times = multiply(numA, numB);
-        return times;
+        return times.toFixed(2);
     } else if (operator == "divide") {
         let divided = divide(numA, numB);
-        return divided;
+        return divided.toFixed(2);
     }
 }
+
