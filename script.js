@@ -16,12 +16,13 @@ let chosenOp = '';
 let userNumArr = [];
 let userOpArr = [];
 let userNumFinal = 0;
-let displayNums = [];
+let displayNums = 0;
 
 // for each number, its id is pushed into the number array
 numbers.forEach(function(number) {
     number.addEventListener('click', function(e) {
         usersArray.push(number.id);
+        displayScreen.textContent = number.textContent;
     });
 });
 
